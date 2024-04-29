@@ -1,0 +1,3 @@
+fp_sample_csv: '/home/hungphd/git/data_aiio/sample_train.csv'
+fop_result: '/home/hungphd/git/data_aiio/results/'
+isCacheTrainTest: True

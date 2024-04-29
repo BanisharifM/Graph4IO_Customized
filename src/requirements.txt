@@ -1,0 +1,11 @@
+torch-geometric>=2.0.4
+tensorboardX
+seaborn
+
+omegaconf
+tensorflow>=2.10.0
+scikeras
+lightgbm
+pyarrow
+dgl
+pydantic

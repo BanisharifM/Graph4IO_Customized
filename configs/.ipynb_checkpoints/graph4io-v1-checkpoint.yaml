@@ -1,0 +1,3 @@
+fp_sample_csv: 'data/sample_train.csv'
+fop_result: 'results/graph4io-v1/'
+isCacheTrainTest: True

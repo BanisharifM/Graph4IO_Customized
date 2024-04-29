@@ -1,0 +1,14 @@
+torch>=1.6.0
+torch-geometric>=1.6.1
+torchvision>=0.7.0
+tensorboardX
+seaborn==0.10.1
+
+omegaconf
+tensorflow
+scikeras
+lightgbm
+pyarrow
+dgl
+pydantic
+tensorflow[and-cuda]

@@ -1,0 +1,3 @@
+# fp_sample_csv: 'https://drive.google.com/file/d/1AjejmV_qS4VJLBlRzRnFxAl2vkD4L0zE/view?usp=drive_link'
+fp_sample_csv: 'Mahdi/Graph4IO/data/hdf5_diagonal_write_1_byte_dxt_counters.csv'
+fop_result: 'results/lightgbm/'
