@@ -12,12 +12,10 @@ from omegaconf import OmegaConf
 from utils import *
 import yaml
 
-# Argument parsing setup
 argParser = argparse.ArgumentParser()
-argParser.add_argument("-cp", "--configPath", help="Specify the config path", default='configs/graph4io-v2.yaml')
+argParser.add_argument("-cp", "--configPath", help="your name", default='configs/graph4io-v2.yaml')
 argObj = argParser.parse_args()
 
-# Configuration loading
 conf = OmegaConf.load(argObj.configPath)
 fp_sample_csv = conf['fp_sample_csv']
 fop_result = conf['fop_result']
@@ -26,26 +24,27 @@ createDirIfNotExist(fopCsvGNNTrain)
 fpYaml = fopCsvGNNTrain + 'meta.yaml'
 createDirIfNotExist(fop_result)
 
-# Load edge types from YAML
+# Load graph dataset, assuming it correctly sets up the edge types
+dataset_pg = dgl.data.CSVDataset(fopCsvGNNTrain, force_reload=True)
+
+# Assuming meta.yaml is properly populated by the graph generation script
 with open(fpYaml, 'r') as f:
     dictYaml = yaml.safe_load(f)
-etypes = ['_'.join(edge['etype']) for edge in dictYaml['edge_data']]  # Convert list of strings to a single string
+etypes = [edge['etype'] for edge in dictYaml['edge_data']]
 
 print("Loaded edge types: ", etypes)
 
-# Define RGCN module
 class RGCN(nn.Module):
     def __init__(self, in_feats, hid_feats, out_feats, rel_names):
         super().__init__()
         self.conv1 = dglnn.HeteroGraphConv({rel: dglnn.GraphConv(in_feats, hid_feats) for rel in rel_names}, aggregate='sum')
-        # Define additional layers if needed
+        # Initialize other layers as needed
 
     def forward(self, graph, inputs):
         h = self.conv1(graph, inputs)
         h = {k: F.relu(v) for k, v in h.items()}
         return h
 
-# Define heterogenous graph regressor
 class HeteroRegressor(nn.Module):
     def __init__(self, in_dim, hidden_dim, n_classes, rel_names):
         super().__init__()
@@ -60,7 +59,6 @@ class HeteroRegressor(nn.Module):
             hg = dgl.mean_nodes(g, 'h')
             return self.regressor(hg)
 
-# Instantiate model, optimizer, and set up training
 model_pg = HeteroRegressor(45, 64, 1, etypes)
 opt = torch.optim.Adam(model_pg.parameters())
 
