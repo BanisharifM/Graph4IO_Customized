@@ -26,6 +26,12 @@ createDirIfNotExist(fopCsvGNNTrain)
 fpYaml = fopCsvGNNTrain + 'meta.yaml'
 createDirIfNotExist(fop_result)
 
+#Create Output Dir
+fop_output_acc=fop_result+'output/'
+createDirIfNotExist(fop_output_acc)
+ 
+dataset_pg = dgl.data.CSVDataset(fopCsvGNNTrain,force_reload=True)
+
 # Load edge types from YAML
 with open(fpYaml, 'r') as f:
     dictYaml = yaml.safe_load(f)
@@ -59,6 +65,9 @@ class HeteroRegressor(nn.Module):
             g.ndata['h'] = h
             hg = dgl.mean_nodes(g, 'h')
             return self.regressor(hg)
+
+train_dataloader_pg = GraphDataLoader(dataset_pg, shuffle=False, batch_size=100)
+test_dataloader_pg = GraphDataLoader(dataset_test, batch_size=100)
 
 # Instantiate model, optimizer, and set up training
 model_pg = HeteroRegressor(45, 64, 1, etypes)
