@@ -39,6 +39,12 @@ etypes = ['_'.join(edge['etype']) for edge in dictYaml['edge_data']]  # Convert 
 
 print("Loaded edge types: ", etypes)
 
+lenTrain=49854
+lenTest=16618
+test_idx = list(range(lenTrain,lenTrain+lenTest))
+train_idx = list(range(0,lenTrain))
+ind_count = 0
+
 # Define RGCN module
 class RGCN(nn.Module):
     def __init__(self, in_feats, hid_feats, out_feats, rel_names):
@@ -65,6 +71,8 @@ class HeteroRegressor(nn.Module):
             g.ndata['h'] = h
             hg = dgl.mean_nodes(g, 'h')
             return self.regressor(hg)
+
+dataset_test = Subset(dataset_pg, test_idx)
 
 train_dataloader_pg = GraphDataLoader(dataset_pg, shuffle=False, batch_size=100)
 test_dataloader_pg = GraphDataLoader(dataset_test, batch_size=100)
